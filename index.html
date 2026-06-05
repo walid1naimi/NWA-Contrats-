@@ -527,7 +527,7 @@ const S={
   ctPhases:["ESQ","APS","APD","PC"],
   ctAcompte:30,
   togPI:true, togSusp:true, togTVA:false,
-  projects: JSON.parse(localStorage.getItem("nwa_projects")||"[]"),
+  projects:(function(){try{return JSON.parse(localStorage.getItem("nwa_projects")||"[]")}catch(e){return[]}})(),
   mPhases:[],
 };
 
@@ -535,10 +535,10 @@ const S={
 const fmt=n=>new Intl.NumberFormat("fr-DZ").format(Math.round(n))+" DA";
 const fmtN=n=>new Intl.NumberFormat("fr-DZ").format(Math.round(n));
 const $=id=>document.getElementById(id);
-const show=el=>{el.style.display=""};
-const hide=el=>{el.style.display="none"};
+const show=el=>{if(!el)return;el.classList.remove("hide");if(el.classList.contains("modal-overlay"))el.style.display="flex";else el.style.display="block"};
+const hide=el=>{if(!el)return;el.classList.add("hide");el.style.display="none"};
 function toast(msg){const t=$("toast");t.textContent=msg;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2500)}
-function saveProjects(){localStorage.setItem("nwa_projects",JSON.stringify(S.projects))}
+function saveProjects(){try{localStorage.setItem("nwa_projects",JSON.stringify(S.projects))}catch(e){}}
 
 // ═══════════════ TABS ═══════════════
 document.querySelectorAll(".ntab").forEach(b=>{
@@ -547,7 +547,7 @@ document.querySelectorAll(".ntab").forEach(b=>{
     b.classList.add("on");
     ["calc","contrat","compta","guide"].forEach(t=>{
       const el=$("tab-"+t);
-      if(t===b.dataset.t){show(el)}else{hide(el)};
+      if(t===b.dataset.t){el.style.display='block';el.classList.remove('hide')}else{el.style.display='none';el.classList.add('hide')};
     });
     if(b.dataset.t==="compta") renderCompta();
   });
