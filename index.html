@@ -1,0 +1,1079 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+  <meta name="theme-color" content="#f5f4f2"/>
+  <meta name="mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="default"/>
+  <meta name="apple-mobile-web-app-title" content="NWA"/>
+  <title>NWA — Devis & Contrats</title>
+  <link id="pwa-manifest" rel="manifest" href="#"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet"/>
+
+  <style>
+    :root {
+      --bg:       #f5f4f2;
+      --bg2:      #edecea;
+      --bg3:      #ffffff;
+      --bg4:      #f0efed;
+      --ink:      #1c1c1c;
+      --ink2:     #4a4a4a;
+      --ink3:     #888;
+      --line:     #dddbd8;
+      --line2:    #e8e6e3;
+      --accent:   #2d2d2d;
+      --pill:     #1c1c1c;
+      --pill-txt: #ffffff;
+      --green:    #2e7d5e;
+      --green-bg: #edf5f1;
+      --amber:    #b45309;
+      --amber-bg: #fef3e2;
+      --red:      #c0392b;
+      --red-bg:   #fdf0ee;
+      --safe-top: env(safe-area-inset-top,0px);
+      --safe-bot: env(safe-area-inset-bottom,0px);
+      --r: 12px;
+    }
+    *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+    html,body{height:100%;background:var(--bg);color:var(--ink);font-family:'DM Sans',sans-serif;font-size:15px;-webkit-font-smoothing:antialiased}
+    input,button,select,textarea{font-family:'DM Sans',sans-serif}
+    input:focus{outline:none}
+    ::-webkit-scrollbar{width:3px;height:3px}
+    ::-webkit-scrollbar-track{background:transparent}
+    ::-webkit-scrollbar-thumb{background:var(--line);border-radius:2px}
+    .serif{font-family:'DM Serif Display',serif}
+
+    /* ── LAYOUT */
+    #app{display:flex;flex-direction:column;min-height:100dvh}
+
+    /* ── HEADER */
+    #hdr{
+      background:var(--bg3);
+      border-bottom:1px solid var(--line);
+      padding:calc(var(--safe-top) + 14px) 18px 14px;
+      position:sticky;top:0;z-index:100;
+    }
+    #hdr-inner{display:flex;align-items:center;justify-content:space-between}
+    .hdr-brand{font-size:11px;font-weight:600;letter-spacing:.5px;color:var(--ink3)}
+    .hdr-title{font-family:'DM Serif Display',serif;font-size:20px;color:var(--ink);margin-top:2px}
+    .hdr-meta{text-align:right}
+    .hdr-badge{display:inline-block;background:var(--bg2);border:1px solid var(--line);border-radius:20px;padding:3px 10px;font-size:10px;color:var(--ink3);letter-spacing:.3px}
+
+    /* ── NAV */
+    #nav{
+      display:flex;background:var(--bg3);border-bottom:1px solid var(--line);
+      overflow-x:auto;-webkit-overflow-scrolling:touch;
+      position:sticky;top:calc(var(--safe-top) + 65px);z-index:99;
+      gap:0;padding:0 6px;
+    }
+    #nav::-webkit-scrollbar{display:none}
+    .ntab{
+      flex-shrink:0;padding:12px 14px;border:none;background:transparent;
+      color:var(--ink3);cursor:pointer;font-family:'DM Sans',sans-serif;
+      font-size:13px;font-weight:500;white-space:nowrap;
+      border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .15s;
+    }
+    .ntab.on{color:var(--ink);border-bottom-color:var(--ink);font-weight:600}
+
+    /* ── MAIN */
+    #main{flex:1;padding:20px 16px calc(var(--safe-bot) + 24px)}
+
+    /* ── CARDS */
+    .card{background:var(--bg3);border:1px solid var(--line);border-radius:var(--r);padding:16px;margin-bottom:14px}
+    .card-title{font-size:11px;font-weight:600;letter-spacing:.5px;color:var(--ink3);text-transform:uppercase;margin-bottom:12px}
+
+    /* ── FIELDS */
+    .field{margin-bottom:14px}
+    .field label{display:block;font-size:12px;font-weight:500;color:var(--ink2);margin-bottom:5px}
+    .field-row{display:flex;align-items:center;gap:8px}
+    .finput{
+      flex:1;background:var(--bg4);border:1.5px solid var(--line);border-radius:8px;
+      padding:10px 12px;color:var(--ink);font-size:15px;width:100%;transition:border-color .15s;
+    }
+    .finput:focus{border-color:var(--ink);background:#fff}
+    .funit{font-size:12px;color:var(--ink3);white-space:nowrap;font-weight:500}
+
+    /* ── BUTTONS */
+    .btn-primary{
+      width:100%;padding:15px;background:var(--ink);border:none;border-radius:10px;
+      color:#fff;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;
+      cursor:pointer;letter-spacing:.2px;margin-top:6px;transition:opacity .15s;
+    }
+    .btn-primary:active{opacity:.8}
+    .chip{
+      padding:7px 14px;border-radius:20px;border:1.5px solid var(--line);
+      background:transparent;color:var(--ink2);font-family:'DM Sans',sans-serif;
+      font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;white-space:nowrap;
+    }
+    .chip.on{background:var(--ink);border-color:var(--ink);color:#fff}
+    .chips{display:flex;flex-wrap:wrap;gap:6px}
+
+    /* ── TYPE SELECTOR */
+    .type-row{
+      display:flex;align-items:center;justify-content:space-between;
+      padding:11px 12px;border-radius:8px;border:1.5px solid var(--line);
+      background:transparent;cursor:pointer;margin-bottom:6px;transition:all .15s;
+      width:100%;text-align:left;
+    }
+    .type-row.on{background:var(--bg2);border-color:var(--ink)}
+    .type-row .taux{font-size:13px;font-weight:700;color:var(--ink)}
+    .type-row .tlabel{font-size:13px;color:var(--ink2);flex:1;margin:0 10px}
+    .type-row.on .tlabel{color:var(--ink)}
+    .type-dot{width:8px;height:8px;border-radius:50%;border:2px solid var(--line);transition:all .15s;flex-shrink:0}
+    .type-row.on .type-dot{background:var(--ink);border-color:var(--ink)}
+
+    /* ── DATA ROWS */
+    .drow{display:flex;justify-content:space-between;align-items:baseline;padding:6px 0;border-bottom:1px solid var(--line2)}
+    .drow:last-child{border-bottom:none}
+    .dlabel{font-size:13px;color:var(--ink3)}
+    .dval{font-size:13px;color:var(--ink2);font-weight:500}
+    .dval.big{font-size:15px;color:var(--ink);font-weight:700}
+    .dval.accent{font-size:15px;color:var(--green);font-weight:700}
+
+    /* ── PHASE CARDS */
+    .phase-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+    .phase-card{
+      border:1.5px solid var(--line);border-radius:10px;padding:10px;
+      cursor:pointer;transition:all .15s;background:var(--bg4);text-align:left;
+    }
+    .phase-card.on{background:#fff;border-color:var(--ink)}
+    .ph-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+    .ph-id{font-size:12px;font-weight:700;color:var(--ink2)}
+    .phase-card.on .ph-id{color:var(--ink)}
+    .ph-pct{font-size:11px;font-weight:600;color:var(--ink3);background:var(--bg2);padding:2px 7px;border-radius:10px}
+    .phase-card.on .ph-pct{background:var(--ink);color:#fff}
+    .ph-desc{font-size:11px;color:var(--ink3);line-height:1.4}
+    .ph-amt{font-size:12px;font-weight:600;color:var(--green);margin-top:5px}
+
+    /* ── ECHÉANCIER */
+    .ech-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--line2)}
+    .ech-row:last-child{border-bottom:none}
+    .ech-phase{font-size:13px;color:var(--ink2)}
+    .ech-right{text-align:right}
+    .ech-pct{font-size:12px;font-weight:700;color:var(--ink)}
+    .ech-amt{font-size:11px;color:var(--ink3)}
+
+    /* ── TOGGLE */
+    .tog-row{display:flex;align-items:center;gap:10px;cursor:pointer;padding:6px 0}
+    .tog-track{width:36px;height:21px;border-radius:11px;background:var(--line);position:relative;flex-shrink:0;transition:background .2s}
+    .tog-track.on{background:var(--ink)}
+    .tog-thumb{width:17px;height:17px;border-radius:50%;background:#fff;position:absolute;top:2px;left:2px;transition:left .2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+    .tog-track.on .tog-thumb{left:17px}
+    .tog-label{font-size:13px;color:var(--ink2)}
+
+    /* ── SUMMARY BAR */
+    .sum-bar{
+      display:flex;justify-content:space-between;align-items:center;
+      background:var(--bg2);border:1px solid var(--line);border-radius:8px;padding:10px 14px;
+    }
+    .sum-label{font-size:12px;color:var(--ink3)}
+    .sum-val{font-size:15px;font-weight:700;color:var(--ink)}
+
+    /* ── COMPTA */
+    .proj-card{
+      background:#fff;border:1.5px solid var(--line);border-radius:var(--r);
+      padding:14px;margin-bottom:10px;
+    }
+    .proj-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
+    .proj-name{font-size:15px;font-weight:600;color:var(--ink)}
+    .proj-type{font-size:11px;color:var(--ink3);margin-top:2px}
+    .status-badge{
+      font-size:11px;font-weight:600;padding:3px 9px;border-radius:12px;white-space:nowrap;
+    }
+    .status-en-cours{background:var(--amber-bg);color:var(--amber)}
+    .status-termine{background:var(--green-bg);color:var(--green)}
+    .status-en-attente{background:var(--red-bg);color:var(--red)}
+    .progress-bar{height:5px;background:var(--line);border-radius:3px;overflow:hidden;margin:8px 0}
+    .progress-fill{height:100%;background:var(--green);border-radius:3px;transition:width .3s}
+    .proj-phases{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}
+    .proj-phase-pill{
+      font-size:10px;font-weight:600;padding:2px 8px;border-radius:10px;
+      border:1px solid var(--line);color:var(--ink3);background:var(--bg2);
+    }
+    .proj-phase-pill.paid{background:var(--green-bg);color:var(--green);border-color:#c3e6d5}
+    .proj-phase-pill.pending{background:var(--amber-bg);color:var(--amber);border-color:#fde4a6}
+    .kpi-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+    .kpi{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:14px}
+    .kpi-label{font-size:11px;color:var(--ink3);font-weight:500;margin-bottom:4px}
+    .kpi-val{font-size:20px;font-weight:700;color:var(--ink);font-family:'DM Serif Display',serif}
+    .kpi-sub{font-size:11px;color:var(--ink3);margin-top:2px}
+    .kpi.green .kpi-val{color:var(--green)}
+    .kpi.amber .kpi-val{color:var(--amber)}
+    .add-proj-btn{
+      width:100%;padding:14px;border:2px dashed var(--line);border-radius:var(--r);
+      background:transparent;color:var(--ink3);font-size:14px;font-weight:500;
+      cursor:pointer;transition:all .15s;margin-bottom:14px;
+    }
+    .add-proj-btn:active{background:var(--bg2)}
+
+    /* ── MODAL */
+    .modal-overlay{
+      position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:200;
+      display:flex;align-items:flex-end;
+    }
+    .modal-overlay.hide{display:none}
+    .modal-sheet{
+      background:#fff;width:100%;border-radius:20px 20px 0 0;
+      padding:20px 18px calc(var(--safe-bot) + 20px);
+      max-height:90dvh;overflow-y:auto;
+    }
+    .modal-handle{width:40px;height:4px;background:var(--line);border-radius:2px;margin:0 auto 16px}
+    .modal-title{font-family:'DM Serif Display',serif;font-size:20px;color:var(--ink);margin-bottom:16px}
+    .modal-close{position:absolute;top:16px;right:18px;background:var(--bg2);border:none;border-radius:50%;width:30px;height:30px;font-size:16px;cursor:pointer;color:var(--ink2);display:flex;align-items:center;justify-content:center}
+
+    /* ── GUIDE */
+    .g-card{border-radius:10px;padding:14px;margin-bottom:10px;border-left:3px solid}
+    .g-icon{font-size:20px;margin-bottom:6px}
+    .g-title{font-size:14px;font-weight:600;color:var(--ink);margin-bottom:5px}
+    .g-text{font-size:13px;color:var(--ink3);line-height:1.7}
+
+    /* ── INSTALL BANNER */
+    #inst-bar{
+      display:flex;align-items:center;gap:10px;padding:10px 16px;
+      background:#fff;border-bottom:1px solid var(--line);
+    }
+    #inst-bar.hide{display:none}
+    #inst-bar p{font-size:13px;color:var(--ink2);flex:1}
+    #inst-btn{
+      background:var(--ink);color:#fff;border:none;border-radius:8px;
+      padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;
+    }
+    #inst-x{background:none;border:none;color:var(--ink3);font-size:18px;cursor:pointer;padding:0 2px}
+
+    /* ── TOAST */
+    #toast{
+      position:fixed;bottom:calc(var(--safe-bot) + 16px);left:50%;transform:translateX(-50%);
+      background:var(--ink);color:#fff;padding:9px 20px;border-radius:20px;
+      font-size:13px;z-index:999;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap;
+    }
+    #toast.show{opacity:1}
+
+    hr.light{border:none;border-top:1px solid var(--line2);margin:12px 0}
+  </style>
+</head>
+<body>
+<div id="app">
+
+  <!-- HEADER -->
+  <div id="hdr">
+    <div id="hdr-inner">
+      <div>
+        <div class="hdr-brand">NWA — Naimi Workshop Architectes</div>
+        <div class="hdr-title serif">Devis & Contrats</div>
+      </div>
+      <div class="hdr-meta">
+        <span class="hdr-badge">Algérie · Marché Privé</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- INSTALL BANNER -->
+  <div id="inst-bar" class="hide">
+    <p>📲 Installer l'app sur votre écran d'accueil</p>
+    <button id="inst-btn">Installer</button>
+    <button id="inst-x">✕</button>
+  </div>
+
+  <!-- NAV -->
+  <div id="nav">
+    <button class="ntab on" data-t="calc">Calculateur</button>
+    <button class="ntab" data-t="contrat">Contrat</button>
+    <button class="ntab" data-t="compta">Comptabilité</button>
+    <button class="ntab" data-t="guide">Guide</button>
+  </div>
+
+  <!-- MAIN -->
+  <div id="main">
+
+    <!-- ══ CALCULATEUR ══ -->
+    <div id="tab-calc">
+      <div class="card">
+        <div class="card-title">Type de projet</div>
+        <div id="type-list"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Paramètres</div>
+        <div class="field">
+          <label>Surface totale</label>
+          <div class="field-row">
+            <input class="finput" type="number" id="c-surf" placeholder="Ex : 250" min="1"/>
+            <span class="funit">m²</span>
+          </div>
+        </div>
+        <div class="field">
+          <label>Coût estimatif / m²</label>
+          <div class="field-row">
+            <input class="finput" type="number" id="c-cout" value="120000" min="1"/>
+            <span class="funit">DA/m²</span>
+          </div>
+        </div>
+        <div class="field">
+          <label>Taux personnalisé (optionnel)</label>
+          <div class="field-row">
+            <input class="finput" type="number" id="c-taux" placeholder="Laissez vide = taux par défaut"/>
+            <span class="funit">%</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" id="c-result">
+        <div class="card-title">Résumé financier</div>
+        <div class="drow"><span class="dlabel">Surface</span><span class="dval" id="cr-surf">—</span></div>
+        <div class="drow"><span class="dlabel">Coût/m²</span><span class="dval" id="cr-cout">—</span></div>
+        <div class="drow"><span class="dlabel">Coût total travaux</span><span class="dval big" id="cr-total">—</span></div>
+        <hr class="light"/>
+        <div class="drow"><span class="dlabel" id="cr-taux-lbl">Taux (—%)</span><span class="dval"></span></div>
+        <div class="drow"><span class="dlabel">Honoraires (mission complète)</span><span class="dval accent" id="cr-hon">—</span></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Échéancier recommandé</div>
+        <div id="c-ech"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Phases — sélectionnez votre mission</div>
+        <div class="phase-grid" id="c-phases"></div>
+        <div class="sum-bar" id="c-sum" style="display:none">
+          <span class="sum-label" id="c-sum-lbl">—</span>
+          <span class="sum-val" id="c-sum-val">—</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ CONTRAT ══ -->
+    <div id="tab-contrat" style="display:none">
+      <div class="card">
+        <div class="card-title">Votre cabinet</div>
+        <div class="field"><label>Nom du cabinet</label><input class="finput" id="ct-arch" value="NWA — Naimi Workshop Architectes"/></div>
+        <div class="field"><label>Adresse</label><input class="finput" id="ct-adr-arch" value="Dely Brahim, Alger"/></div>
+        <div class="field"><label>N° Ordre des Architectes</label><input class="finput" id="ct-ordre" placeholder="Ex : 1234/Alger"/></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Client</div>
+        <div class="field"><label>Nom complet</label><input class="finput" id="ct-client" placeholder="M. Ahmed Benali"/></div>
+        <div class="field"><label>Adresse</label><input class="finput" id="ct-adr-client"/></div>
+        <div class="field"><label>Téléphone</label><input class="finput" type="tel" id="ct-tel"/></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Projet</div>
+        <div class="field"><label>Intitulé du projet</label><input class="finput" id="ct-nom" placeholder="Villa Benali — Chéraga"/></div>
+        <div class="field"><label>Adresse du projet</label><input class="finput" id="ct-adr-proj"/></div>
+        <div class="field">
+          <label>Surface</label>
+          <div class="field-row"><input class="finput" type="number" id="ct-surf"/><span class="funit">m²</span></div>
+        </div>
+        <div class="field"><label>Niveaux</label><input class="finput" id="ct-niv" placeholder="R+2"/></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Mission confiée</div>
+        <div class="chips" id="ct-phases"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Honoraires</div>
+        <div class="field">
+          <label>Montant total</label>
+          <div class="field-row"><input class="finput" type="number" id="ct-montant"/><span class="funit">DA</span></div>
+        </div>
+        <div class="field">
+          <label>Acompte à la signature</label>
+          <div class="chips" id="ct-acompte-chips" style="margin-bottom:8px"></div>
+          <div id="ct-acompte-val" style="font-size:14px;font-weight:600;color:var(--green)"></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Détails</div>
+        <div class="field">
+          <label>Durée estimée</label>
+          <div class="field-row"><input class="finput" type="number" id="ct-duree" value="12"/><span class="funit">mois</span></div>
+        </div>
+        <div class="field"><label>Date du contrat</label><input class="finput" type="date" id="ct-date"/></div>
+        <div class="field"><label>Ville</label><input class="finput" id="ct-ville" value="Alger"/></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Options</div>
+        <div class="tog-row" id="tog-pi">
+          <div class="tog-track on"><div class="tog-thumb"></div></div>
+          <span class="tog-label">Mention propriété intellectuelle</span>
+        </div>
+        <div class="tog-row" id="tog-susp">
+          <div class="tog-track on"><div class="tog-thumb"></div></div>
+          <span class="tog-label">Clause de suspension en cas d'impayé</span>
+        </div>
+        <div class="tog-row" id="tog-tva">
+          <div class="tog-track"><div class="tog-thumb"></div></div>
+          <span class="tog-label">Appliquer TVA 19%</span>
+        </div>
+      </div>
+      <button class="btn-primary" id="ct-gen">Générer la lettre d'entente →</button>
+    </div>
+
+    <!-- ══ COMPTABILITÉ ══ -->
+    <div id="tab-compta" style="display:none">
+      <div class="kpi-grid" id="kpi-grid"></div>
+      <button class="add-proj-btn" id="add-proj-btn">+ Ajouter un projet</button>
+      <div id="proj-list"></div>
+    </div>
+
+    <!-- ══ GUIDE ══ -->
+    <div id="tab-guide" style="display:none">
+      <div class="card" style="border-color:var(--ink);margin-bottom:16px">
+        <div class="card-title">Contexte Algérie</div>
+        <p style="font-size:13px;color:var(--ink2);line-height:1.8">
+          En Algérie, le problème de <em>"l'esquisse gratuite"</em> est structurel. L'absence d'un barème obligatoire et la concurrence ont créé une culture où le client considère l'esquisse comme un service de démarchage. <strong>Votre lettre d'entente est votre seule protection réelle.</strong>
+        </p>
+      </div>
+      <div id="guide-list"></div>
+    </div>
+
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<!-- MODAL PROJET -->
+<div class="modal-overlay hide" id="proj-modal">
+  <div class="modal-sheet" style="position:relative">
+    <div class="modal-handle"></div>
+    <button class="modal-close" id="proj-modal-close">✕</button>
+    <div class="modal-title serif">Nouveau projet</div>
+    <div class="field"><label>Nom du projet / client</label><input class="finput" id="m-nom" placeholder="Villa Benali — Chéraga"/></div>
+    <div class="field"><label>Type</label>
+      <select class="finput" id="m-type">
+        <option value="Résidentiel">Résidentiel</option>
+        <option value="Collectif">Collectif</option>
+        <option value="Industriel">Industriel</option>
+        <option value="Rénovation">Rénovation</option>
+        <option value="Intérieur">Intérieur</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Honoraires totaux</label>
+      <div class="field-row"><input class="finput" type="number" id="m-hon"/><span class="funit">DA</span></div>
+    </div>
+    <div class="field">
+      <label>Phases de la mission</label>
+      <div class="chips" id="m-phases" style="gap:6px;flex-wrap:wrap"></div>
+    </div>
+    <div class="field"><label>Statut</label>
+      <select class="finput" id="m-status">
+        <option value="en-cours">En cours</option>
+        <option value="en-attente">En attente de paiement</option>
+        <option value="termine">Terminé</option>
+      </select>
+    </div>
+    <button class="btn-primary" id="m-save">Enregistrer le projet</button>
+  </div>
+</div>
+
+<!-- PHASE DETAIL MODAL -->
+<div class="modal-overlay hide" id="phase-modal">
+  <div class="modal-sheet" style="position:relative">
+    <div class="modal-handle"></div>
+    <button class="modal-close" id="phase-modal-close">✕</button>
+    <div class="modal-title serif" id="pm-title">Phases</div>
+    <div id="pm-content"></div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ═══════════════ DATA ═══════════════
+const PHASES=[
+  {id:"ESQ",label:"Esquisse",pct:8,desc:"Étude préliminaire, parti architectural"},
+  {id:"APS",label:"Avant-Projet Sommaire",pct:12,desc:"Plans, coupes, façades à l'échelle"},
+  {id:"APD",label:"Avant-Projet Définitif",pct:15,desc:"Plans définitifs, descriptif général"},
+  {id:"PC", label:"Permis de Construire",pct:8, desc:"Constitution et dépôt du dossier PC"},
+  {id:"PRO",label:"Projet",pct:18,desc:"Plans d'exécution, CCTP, consultations"},
+  {id:"ACT",label:"Assistance Contrats",pct:5, desc:"Analyse offres, mise au point marché"},
+  {id:"DET",label:"Direction Travaux",pct:22,desc:"Visa des plans, suivi de chantier"},
+  {id:"OPC",label:"Ordonnancement",pct:7, desc:"Planning, coordination intervenants"},
+  {id:"AOR",label:"Levée Réserves",pct:5, desc:"Réception des travaux"},
+];
+const TYPES=[
+  {id:"residentiel",label:"Résidentiel (villa, appartement)",taux:7},
+  {id:"collectif",  label:"Collectif (immeuble R+N)",taux:6},
+  {id:"industriel", label:"Industriel / Commercial",taux:5.5},
+  {id:"renovation", label:"Rénovation / Extension",taux:9},
+  {id:"interieur",  label:"Architecture d'intérieur",taux:10},
+];
+const ECH=[
+  {phase:"Signature du contrat",pct:20},
+  {phase:"Remise ESQ",pct:15},
+  {phase:"Remise APS",pct:15},
+  {phase:"Remise APD + PC",pct:20},
+  {phase:"Remise PRO",pct:15},
+  {phase:"Mi-chantier (DET)",pct:10},
+  {phase:"Réception travaux",pct:5},
+];
+const CONSEILS=[
+  {icon:"✋",titre:"Jamais d'esquisse sans entente signée",color:"#e53935",texte:"Aucun document ne quitte votre bureau sans signature et acompte. C'est non négociable, même pour un ami ou une connaissance."},
+  {icon:"💰",titre:"Acompte minimum : 30% à la signature",color:"#b45309",texte:"30 à 40% à la signature en Algérie. L'ESQ seule représente ~8% — l'acompte couvre au moins ce travail si le client disparaît."},
+  {icon:"🔒",titre:"Vos plans vous appartiennent",color:"#2e7d5e",texte:"Loi 03-05 : vos créations sont protégées. Les plans ne peuvent pas servir à construire sans règlement complet de votre mission."},
+  {icon:"📋",titre:"Facturer par phase = ne jamais travailler à perte",color:"#1565c0",texte:"Chaque remise de document déclenche une facture. Le client paie ce qu'il reçoit, étape par étape."},
+  {icon:"⚡",titre:"Impayé = arrêt immédiat",color:"#f4511e",texte:"Incluez-le dans votre lettre : tout impayé suspend la mission sans préavis. Simple et efficace."},
+  {icon:"🤝",titre:"Présentez le contrat comme une protection mutuelle",color:"#6a1b9a",texte:"'Ce document vous protège autant que moi. Il définit exactement ce que vous recevez, quand et pour quel prix.' Ça change tout."},
+  {icon:"🏛",titre:"Taux de référence en Algérie",color:"#37474f",texte:"Résidentiel : 7-9%. Collectif : 6-7%. Industriel : 5-6%. Rénovation : 8-12%. Intérieur : 10-15%. Pas de barème officiel — c'est votre jugement."},
+  {icon:"📝",titre:"Le bon de commande ESQ pour les petits projets",color:"#00838f",texte:"1 page, signée, qui formalise le paiement de l'esquisse seule à prix fixe. Rapide, clair, professionnel."},
+];
+
+// ═══════════════ ÉTAT ═══════════════
+const S={
+  calcType:"residentiel",
+  calcPhases:["ESQ","APS","APD","PC","PRO","DET","AOR"],
+  ctPhases:["ESQ","APS","APD","PC"],
+  ctAcompte:30,
+  togPI:true, togSusp:true, togTVA:false,
+  projects: JSON.parse(localStorage.getItem("nwa_projects")||"[]"),
+  mPhases:[],
+};
+
+// ═══════════════ HELPERS ═══════════════
+const fmt=n=>new Intl.NumberFormat("fr-DZ").format(Math.round(n))+" DA";
+const fmtN=n=>new Intl.NumberFormat("fr-DZ").format(Math.round(n));
+const $=id=>document.getElementById(id);
+const show=el=>{el.style.display=""};
+const hide=el=>{el.style.display="none"};
+function toast(msg){const t=$("toast");t.textContent=msg;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2500)}
+function saveProjects(){localStorage.setItem("nwa_projects",JSON.stringify(S.projects))}
+
+// ═══════════════ TABS ═══════════════
+document.querySelectorAll(".ntab").forEach(b=>{
+  b.addEventListener("click",()=>{
+    document.querySelectorAll(".ntab").forEach(x=>x.classList.remove("on"));
+    b.classList.add("on");
+    ["calc","contrat","compta","guide"].forEach(t=>{
+      const el=$("tab-"+t);
+      if(t===b.dataset.t){show(el)}else{hide(el)};
+    });
+    if(b.dataset.t==="compta") renderCompta();
+  });
+});
+
+// ═══════════════ CALCULATEUR ═══════════════
+function calcVals(){
+  const typeInfo=TYPES.find(t=>t.id===S.calcType);
+  const taux=$("c-taux").value?parseFloat($("c-taux").value):typeInfo.taux;
+  const surf=parseFloat($("c-surf").value)||0;
+  const cout=parseFloat($("c-cout").value)||0;
+  const coutT=surf*cout;
+  const hon=coutT*taux/100;
+  return{typeInfo,taux,surf,cout,coutT,hon};
+}
+
+function buildTypeList(){
+  const c=$("type-list");c.innerHTML="";
+  TYPES.forEach(t=>{
+    const b=document.createElement("button");
+    b.className="type-row"+(S.calcType===t.id?" on":"");
+    b.innerHTML=`<span class="taux">${t.taux}%</span><span class="tlabel">${t.label}</span><div class="type-dot"></div>`;
+    b.addEventListener("click",()=>{S.calcType=t.id;renderCalc()});
+    c.appendChild(b);
+  });
+}
+
+function buildPhaseGrid(){
+  const c=$("c-phases");c.innerHTML="";
+  const{hon}=calcVals();
+  PHASES.forEach(p=>{
+    const sel=S.calcPhases.includes(p.id);
+    const d=document.createElement("div");
+    d.className="phase-card"+(sel?" on":"");
+    d.innerHTML=`<div class="ph-top"><span class="ph-id">${p.id}</span><span class="ph-pct">${p.pct}%</span></div>
+      <div class="ph-desc">${p.desc}</div>
+      ${sel&&hon>0?`<div class="ph-amt">${fmt(hon*p.pct/100)}</div>`:""}`;
+    d.addEventListener("click",()=>{
+      if(S.calcPhases.includes(p.id))S.calcPhases=S.calcPhases.filter(x=>x!==p.id);
+      else S.calcPhases.push(p.id);
+      renderCalc();
+    });
+    c.appendChild(d);
+  });
+}
+
+function buildEch(){
+  const c=$("c-ech");c.innerHTML="";
+  const{hon}=calcVals();
+  ECH.forEach(e=>{
+    const d=document.createElement("div");
+    d.className="ech-row";
+    d.innerHTML=`<span class="ech-phase">${e.phase}</span>
+      <div class="ech-right">
+        <div class="ech-pct">${e.pct}%</div>
+        <div class="ech-amt">${hon?fmt(hon*e.pct/100):"—"}</div>
+      </div>`;
+    c.appendChild(d);
+  });
+}
+
+function renderCalc(){
+  buildTypeList();
+  const{typeInfo,taux,surf,cout,coutT,hon}=calcVals();
+  $("cr-surf").textContent=surf?surf+" m²":"—";
+  $("cr-cout").textContent=cout?fmt(cout):"—";
+  $("cr-total").textContent=coutT?fmt(coutT):"—";
+  $("cr-taux-lbl").textContent=`Taux honoraires (${taux}%)`;
+  $("cr-hon").textContent=hon?fmt(hon):"—";
+  buildEch();
+  buildPhaseGrid();
+  const sel=PHASES.filter(p=>S.calcPhases.includes(p.id));
+  const sb=$("c-sum");
+  if(sel.length&&hon>0){
+    const tot=sel.reduce((s,p)=>s+hon*p.pct/100,0);
+    $("c-sum-lbl").textContent=`${sel.length} phase(s) sélectionnée(s)`;
+    $("c-sum-val").textContent=fmt(tot);
+    sb.style.display="flex";
+  }else sb.style.display="none";
+}
+
+$("c-surf").addEventListener("input",renderCalc);
+$("c-cout").addEventListener("input",renderCalc);
+$("c-taux").addEventListener("input",renderCalc);
+renderCalc();
+
+// ═══════════════ CONTRAT ═══════════════
+$("ct-date").value=new Date().toISOString().split("T")[0];
+
+function buildCtPhases(){
+  const c=$("ct-phases");c.innerHTML="";
+  PHASES.forEach(p=>{
+    const b=document.createElement("button");
+    b.className="chip"+(S.ctPhases.includes(p.id)?" on":"");
+    b.textContent=p.id;
+    b.title=p.label;
+    b.addEventListener("click",()=>{
+      if(S.ctPhases.includes(p.id))S.ctPhases=S.ctPhases.filter(x=>x!==p.id);
+      else S.ctPhases.push(p.id);
+      buildCtPhases();
+    });
+    c.appendChild(b);
+  });
+}
+buildCtPhases();
+
+function buildAcompteChips(){
+  const c=$("ct-acompte-chips");c.innerHTML="";
+  [20,25,30,40,50].forEach(pct=>{
+    const b=document.createElement("button");
+    b.className="chip"+(S.ctAcompte===pct?" on":"");
+    b.textContent=pct+"%";
+    b.addEventListener("click",()=>{S.ctAcompte=pct;buildAcompteChips();updateAcompteVal()});
+    c.appendChild(b);
+  });
+}
+buildAcompteChips();
+
+function updateAcompteVal(){
+  const mon=parseFloat($("ct-montant").value||0);
+  $("ct-acompte-val").textContent=mon>0?`Acompte = ${fmt(mon*S.ctAcompte/100)}`:"";
+}
+$("ct-montant").addEventListener("input",updateAcompteVal);
+
+function setupTog(id,key){
+  const row=$(id);
+  const track=row.querySelector(".tog-track");
+  row.addEventListener("click",()=>{
+    S[key]=!S[key];
+    if(S[key])track.classList.add("on");else track.classList.remove("on");
+  });
+}
+setupTog("tog-pi","togPI");
+setupTog("tog-susp","togSusp");
+setupTog("tog-tva","togTVA");
+
+$("ct-gen").addEventListener("click",()=>{
+  const arch=$("ct-arch").value;
+  const adrArch=$("ct-adr-arch").value;
+  const ordre=$("ct-ordre").value;
+  const client=$("ct-client").value||"—";
+  const adrClient=$("ct-adr-client").value||"—";
+  const tel=$("ct-tel").value||"—";
+  const projNom=$("ct-nom").value||"Projet à définir";
+  const projAdr=$("ct-adr-proj").value||"—";
+  const surf=$("ct-surf").value||"—";
+  const niv=$("ct-niv").value||"—";
+  const montant=parseFloat($("ct-montant").value)||0;
+  const duree=$("ct-duree").value||"12";
+  const ville=$("ct-ville").value||"Alger";
+  const dateRaw=$("ct-date").value;
+  const dateStr=dateRaw?new Date(dateRaw).toLocaleDateString("fr-DZ",{day:"2-digit",month:"long",year:"numeric"}):"—";
+  const acompteDA=montant?Math.round(montant*S.ctAcompte/100):0;
+  const missionIds=S.ctPhases;
+  const missionLabel=missionIds.join(" + ")||"À définir";
+  const missionFull=PHASES.filter(p=>missionIds.includes(p.id)).map(p=>p.label).join(", ")||"À définir";
+  const montantTxt=montant?fmtN(montant)+" DA"+(S.togTVA?" HT (TVA 19% applicable)":""):"À définir";
+  const acompteTxt=acompteDA?`${S.ctAcompte}% — ${fmtN(acompteDA)} DA`:`${S.ctAcompte}%`;
+
+  const w=window.open("","_blank");
+  w.document.write(`<!DOCTYPE html><html lang="fr"><head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width"/>
+  <title>Lettre d'entente — NWA</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet"/>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'DM Sans',sans-serif;font-size:12pt;color:#1c1c1c;background:#fff;padding:40px 50px;line-height:1.8;max-width:780px;margin:0 auto}
+    .serif{font-family:'DM Serif Display',serif}
+    .header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:40px;padding-bottom:20px;border-bottom:2px solid #1c1c1c}
+    .brand{font-size:14pt;font-weight:600;color:#1c1c1c}
+    .brand-sub{font-size:9pt;color:#888;margin-top:2px}
+    .date-city{text-align:right;font-size:10pt;color:#888}
+    h1{font-family:'DM Serif Display',serif;font-size:22pt;margin:0 0 6px;color:#1c1c1c}
+    .subtitle{font-size:10pt;color:#888;letter-spacing:.3px;margin-bottom:32px}
+    .parties{display:grid;grid-template-columns:1fr 1fr;gap:24px;background:#f5f4f2;padding:18px;border-radius:10px;margin-bottom:28px}
+    .partie label{font-size:9pt;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px}
+    .partie p{font-size:12pt;font-weight:600;margin-bottom:2px}
+    .partie span{font-size:11pt;color:#555}
+    .section{margin-bottom:22px}
+    .section-title{font-size:10pt;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#888;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid #e0dedd}
+    .section p{font-size:11.5pt;color:#2a2a2a;margin-bottom:5px}
+    table{width:100%;border-collapse:collapse;margin-top:10px;font-size:11pt}
+    th{background:#1c1c1c;color:#fff;padding:7px 12px;text-align:left;font-weight:500}
+    td{padding:6px 12px;border-bottom:1px solid #e0dedd}
+    tr:nth-child(even) td{background:#fafaf9}
+    .total-box{background:#f5f4f2;border:1px solid #dddbd8;border-radius:8px;padding:14px 18px;margin-top:14px}
+    .total-box .t-label{font-size:10pt;color:#888}
+    .total-box .t-val{font-size:16pt;font-weight:700;color:#1c1c1c;font-family:'DM Serif Display',serif}
+    .note{background:#fef3e2;border-left:3px solid #b45309;padding:10px 14px;border-radius:0 6px 6px 0;font-size:11pt;color:#7a4010;margin:10px 0}
+    .signatures{display:grid;grid-template-columns:1fr 1fr;gap:60px;margin-top:50px}
+    .sig-box{border-top:1px solid #1c1c1c;padding-top:10px}
+    .sig-box .sig-name{font-weight:600;font-size:12pt}
+    .sig-box .sig-role{font-size:10pt;color:#888;margin-top:2px}
+    .sig-space{height:50px}
+    .footer{text-align:center;font-size:9pt;color:#bbb;margin-top:40px;border-top:1px solid #e0dedd;padding-top:14px}
+    @media print{body{padding:20px 30px}}
+  </style></head><body>
+  <div class="header">
+    <div>
+      <div class="brand">${arch}</div>
+      <div class="brand-sub">${adrArch}${ordre?" · N° Ordre : "+ordre:""}</div>
+    </div>
+    <div class="date-city">
+      ${ville}, le ${dateStr}
+    </div>
+  </div>
+  <h1 class="serif">Lettre d'Entente</h1>
+  <div class="subtitle">Mission d'architecture — ${missionLabel}</div>
+
+  <div class="parties">
+    <div class="partie">
+      <label>L'Architecte</label>
+      <p>${arch}</p>
+      <span>${adrArch}</span>
+    </div>
+    <div class="partie">
+      <label>Le Client</label>
+      <p>${client}</p>
+      <span>${adrClient}</span><br/>
+      <span>Tél. : ${tel}</span>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Objet</div>
+    <p>La présente lettre formalise l'accord intervenu entre les deux parties pour la réalisation d'une mission d'architecture concernant le projet :</p>
+    <p><strong>« ${projNom} »</strong> — ${projAdr}</p>
+    <p>Surface : <strong>${surf} m²</strong> &nbsp;·&nbsp; Niveaux : <strong>${niv}</strong></p>
+    <p style="margin-top:8px">Mission confiée : <strong>${missionFull}</strong></p>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Ce que l'architecte s'engage à faire</div>
+    ${PHASES.filter(p=>missionIds.includes(p.id)).map(p=>`
+    <p>✔ <strong>${p.label} (${p.id})</strong> — ${p.desc}</p>`).join("")}
+  </div>
+
+  <div class="section">
+    <div class="section-title">Honoraires & Paiement</div>
+    <div class="total-box">
+      <div class="t-label">Honoraires convenus</div>
+      <div class="t-val">${montantTxt}</div>
+    </div>
+    <table>
+      <thead><tr><th>Étape</th><th>%</th><th>Montant</th></tr></thead>
+      <tbody>
+        ${ECH.map(e=>`<tr><td>${e.phase}</td><td>${e.pct}%</td><td><strong>${montant?fmtN(montant*e.pct/100)+" DA":"—"}</strong></td></tr>`).join("")}
+      </tbody>
+    </table>
+    <p style="margin-top:12px">Un acompte de <strong>${acompteTxt}</strong> est à régler à la signature de cette lettre, avant tout démarrage de mission.</p>
+    ${S.togSusp?`<div class="note">Tout retard de paiement entraîne la suspension immédiate de la mission jusqu'à régularisation.</div>`:""}
+  </div>
+
+  ${S.togPI?`<div class="section">
+    <div class="section-title">Plans & Propriété</div>
+    <p>Les plans, croquis et documents produits par l'architecte restent sa propriété intellectuelle (Loi 03-05). Ils ne peuvent être remis à un entrepreneur ou utilisés pour la réalisation des travaux qu'après règlement complet des honoraires.</p>
+  </div>`:""}
+
+  <div class="section">
+    <div class="section-title">Durée & Conditions</div>
+    <p>Durée prévisionnelle de la mission : <strong>${duree} mois</strong> à compter de la signature et du versement de l'acompte.</p>
+    <p>Chaque partie peut mettre fin à la collaboration par simple accord écrit. Les honoraires des phases déjà réalisées restent dus.</p>
+  </div>
+
+  <div class="signatures">
+    <div class="sig-box">
+      <div class="sig-space"></div>
+      <div class="sig-name">${client}</div>
+      <div class="sig-role">Le Client — Lu et approuvé</div>
+      <div style="font-size:10pt;color:#aaa;margin-top:4px">Date : ___________</div>
+    </div>
+    <div class="sig-box">
+      <div class="sig-space"></div>
+      <div class="sig-name">${arch}</div>
+      <div class="sig-role">L'Architecte</div>
+      <div style="font-size:10pt;color:#aaa;margin-top:4px">Le ${dateStr}</div>
+    </div>
+  </div>
+
+  <div class="footer">Document établi en 2 exemplaires originaux · NWA — Naimi Workshop Architectes</div>
+  </body></html>`);
+  w.document.close();
+  setTimeout(()=>w.print(),500);
+});
+
+// ═══════════════ COMPTABILITÉ ═══════════════
+function renderCompta(){
+  // KPIs
+  const projs=S.projects;
+  const totalHon=projs.reduce((s,p)=>s+(p.honoraires||0),0);
+  const encaisse=projs.filter(p=>p.status==="termine").reduce((s,p)=>s+(p.honoraires||0),0);
+  const attente=projs.filter(p=>p.status==="en-attente").reduce((s,p)=>s+(p.honoraires||0),0);
+  const enCours=projs.filter(p=>p.status==="en-cours").length;
+
+  $("kpi-grid").innerHTML=`
+    <div class="kpi"><div class="kpi-label">Total portefeuille</div><div class="kpi-val serif">${fmtN(totalHon)}</div><div class="kpi-sub">DA tous projets</div></div>
+    <div class="kpi green"><div class="kpi-label">Encaissé</div><div class="kpi-val serif">${fmtN(encaisse)}</div><div class="kpi-sub">DA projets terminés</div></div>
+    <div class="kpi amber"><div class="kpi-label">En attente</div><div class="kpi-val serif">${fmtN(attente)}</div><div class="kpi-sub">DA impayés</div></div>
+    <div class="kpi"><div class="kpi-label">En cours</div><div class="kpi-val serif">${enCours}</div><div class="kpi-sub">projet(s) actif(s)</div></div>
+  `;
+
+  // Projects
+  const pl=$("proj-list");pl.innerHTML="";
+  if(projs.length===0){
+    pl.innerHTML=`<div style="text-align:center;color:var(--ink3);padding:30px 0;font-size:14px">Aucun projet encore.<br/>Ajoutez votre premier projet ci-dessus.</div>`;
+    return;
+  }
+  projs.forEach((p,i)=>{
+    const statusMap={"en-cours":"En cours","en-attente":"En attente","termine":"Terminé"};
+    const statusClass={"en-cours":"status-en-cours","en-attente":"status-en-attente","termine":"status-termine"};
+    const paidPhases=p.paidPhases||[];
+    const allPhases=p.phases||[];
+    const phasePcts=allPhases.map(id=>PHASES.find(x=>x.id===id)?.pct||0);
+    const totalPct=phasePcts.reduce((s,x)=>s+x,0)||100;
+    const paidPct=paidPhases.map(id=>PHASES.find(x=>x.id===id)?.pct||0).reduce((s,x)=>s+x,0);
+    const progress=Math.round(paidPct/totalPct*100);
+
+    const card=document.createElement("div");
+    card.className="proj-card";
+    card.innerHTML=`
+      <div class="proj-header">
+        <div>
+          <div class="proj-name">${p.nom}</div>
+          <div class="proj-type">${p.type}</div>
+        </div>
+        <span class="status-badge ${statusClass[p.status]}">${statusMap[p.status]}</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px">
+        <span style="font-size:13px;color:var(--ink3)">Honoraires</span>
+        <span style="font-size:15px;font-weight:700;color:var(--ink)">${fmt(p.honoraires||0)}</span>
+      </div>
+      <div style="font-size:12px;color:var(--ink3);margin-bottom:6px">Phases payées : ${progress}%</div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${progress}%"></div></div>
+      <div class="proj-phases">
+        ${allPhases.map(id=>`<span class="proj-phase-pill ${paidPhases.includes(id)?"paid":"pending"}">${id}${paidPhases.includes(id)?" ✓":""}</span>`).join("")}
+      </div>
+      <div style="display:flex;gap:8px;margin-top:10px">
+        <button onclick="openPhaseModal(${i})" style="flex:1;padding:8px;border:1px solid var(--line);border-radius:8px;background:transparent;color:var(--ink2);font-size:13px;cursor:pointer;font-weight:500">Gérer les phases</button>
+        <button onclick="deleteProject(${i})" style="padding:8px 12px;border:1px solid #fcd5d2;border-radius:8px;background:#fdf0ee;color:var(--red);font-size:13px;cursor:pointer">Supprimer</button>
+      </div>
+    `;
+    pl.appendChild(card);
+  });
+}
+
+function deleteProject(i){
+  if(confirm("Supprimer ce projet ?")){ S.projects.splice(i,1);saveProjects();renderCompta(); }
+}
+
+function openPhaseModal(i){
+  const p=S.projects[i];
+  $("pm-title").textContent=p.nom;
+  const c=$("pm-content");c.innerHTML="";
+  p.phases.forEach(id=>{
+    const ph=PHASES.find(x=>x.id===id);
+    const paid=(p.paidPhases||[]).includes(id);
+    const hon=p.honoraires||0;
+    const amt=Math.round(hon*ph.pct/100);
+    const row=document.createElement("div");
+    row.style.cssText="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--line2)";
+    row.innerHTML=`
+      <div>
+        <div style="font-size:13px;font-weight:600;color:var(--ink)">${ph.id} — ${ph.label}</div>
+        <div style="font-size:12px;color:var(--ink3)">${fmt(amt)}</div>
+      </div>
+      <button onclick="togglePhasePaid(${i},'${id}',this)" 
+        style="padding:7px 14px;border-radius:20px;border:1.5px solid ${paid?"var(--green)":"var(--line)"};
+        background:${paid?"var(--green-bg)":"transparent"};color:${paid?"var(--green)":"var(--ink3)"};
+        font-size:12px;font-weight:600;cursor:pointer">
+        ${paid?"✓ Encaissé":"Marquer payé"}
+      </button>
+    `;
+    c.appendChild(row);
+  });
+  show($("phase-modal"));
+}
+
+window.togglePhasePaid=function(i,id,btn){
+  const p=S.projects[i];
+  if(!p.paidPhases)p.paidPhases=[];
+  if(p.paidPhases.includes(id))p.paidPhases=p.paidPhases.filter(x=>x!==id);
+  else p.paidPhases.push(id);
+  saveProjects();
+  openPhaseModal(i);
+  renderCompta();
+};
+window.deleteProject=deleteProject;
+window.openPhaseModal=openPhaseModal;
+
+$("phase-modal-close").addEventListener("click",()=>hide($("phase-modal")));
+$("phase-modal").addEventListener("click",e=>{if(e.target===$("phase-modal"))hide($("phase-modal"))});
+
+// Modal ajouter projet
+$("add-proj-btn").addEventListener("click",()=>{
+  $("m-nom").value="";$("m-hon").value="";
+  S.mPhases=["ESQ","APS","APD","PC"];
+  buildMPhases();
+  show($("proj-modal"));
+});
+$("proj-modal-close").addEventListener("click",()=>hide($("proj-modal")));
+$("proj-modal").addEventListener("click",e=>{if(e.target===$("proj-modal"))hide($("proj-modal"))});
+
+function buildMPhases(){
+  const c=$("m-phases");c.innerHTML="";
+  PHASES.forEach(p=>{
+    const b=document.createElement("button");
+    b.className="chip"+(S.mPhases.includes(p.id)?" on":"");
+    b.textContent=p.id;
+    b.addEventListener("click",()=>{
+      if(S.mPhases.includes(p.id))S.mPhases=S.mPhases.filter(x=>x!==p.id);
+      else S.mPhases.push(p.id);
+      buildMPhases();
+    });
+    c.appendChild(b);
+  });
+}
+buildMPhases();
+
+$("m-save").addEventListener("click",()=>{
+  const nom=$("m-nom").value.trim();
+  if(!nom){toast("Veuillez entrer un nom de projet");return;}
+  S.projects.push({
+    nom,
+    type:$("m-type").value,
+    honoraires:parseFloat($("m-hon").value)||0,
+    phases:[...S.mPhases],
+    paidPhases:[],
+    status:$("m-status").value,
+  });
+  saveProjects();
+  hide($("proj-modal"));
+  renderCompta();
+  toast("Projet ajouté ✓");
+});
+
+// ═══════════════ GUIDE ═══════════════
+const gl=$("guide-list");
+CONSEILS.forEach(c=>{
+  const d=document.createElement("div");
+  d.className="g-card";
+  d.style.borderLeftColor=c.color;
+  d.style.background=c.color+"12";
+  d.innerHTML=`<div class="g-icon">${c.icon}</div><div class="g-title">${c.titre}</div><div class="g-text">${c.texte}</div>`;
+  gl.appendChild(d);
+});
+
+// ═══════════════ PWA MANIFEST ═══════════════
+function genIcon(size){
+  const cv=document.createElement("canvas");cv.width=size;cv.height=size;
+  const ctx=cv.getContext("2d");
+  ctx.fillStyle="#ffffff";ctx.fillRect(0,0,size,size);
+  ctx.fillStyle="#1c1c1c";ctx.fillRect(size*.04,size*.04,size*.92,size*.92);
+  ctx.fillStyle="#ffffff";
+  ctx.font=`700 ${Math.round(size*.32)}px 'DM Sans',sans-serif`;
+  ctx.textAlign="center";ctx.textBaseline="middle";
+  ctx.fillText("NWA",size/2,size*.42);
+  ctx.font=`${Math.round(size*.09)}px 'DM Sans',sans-serif`;
+  ctx.fillStyle="#aaa";
+  ctx.fillText("ARCHITECTES",size/2,size*.67);
+  return cv.toDataURL("image/png");
+}
+const manifest={
+  name:"NWA — Devis & Contrats",short_name:"NWA",
+  start_url:"./index.html",scope:"./",
+  display:"standalone",orientation:"portrait-primary",
+  background_color:"#f5f4f2",theme_color:"#f5f4f2",lang:"fr",
+  icons:[
+    {src:genIcon(192),sizes:"192x192",type:"image/png",purpose:"any maskable"},
+    {src:genIcon(512),sizes:"512x512",type:"image/png",purpose:"any maskable"},
+  ]
+};
+const mblob=new Blob([JSON.stringify(manifest)],{type:"application/manifest+json"});
+$("pwa-manifest").href=URL.createObjectURL(mblob);
+
+// ═══════════════ SERVICE WORKER ═══════════════
+const SW=`
+const C='nwa-v2';
+self.addEventListener('install',e=>{self.skipWaiting()});
+self.addEventListener('activate',e=>{
+  e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x!==C).map(x=>caches.delete(x)))));
+  self.clients.claim();
+});
+self.addEventListener('fetch',e=>{
+  e.respondWith(caches.match(e.request).then(r=>{
+    if(r)return r;
+    return fetch(e.request).then(res=>{
+      if(res&&res.status===200){
+        const cl=res.clone();
+        caches.open(C).then(c=>c.put(e.request,cl));
+      }
+      return res;
+    }).catch(()=>r||new Response('Offline',{status:503}));
+  }));
+});
+`;
+if('serviceWorker' in navigator){
+  const swb=new Blob([SW],{type:"text/javascript"});
+  navigator.serviceWorker.register(URL.createObjectURL(swb),{scope:"./"}).catch(()=>{});
+}
+
+// ═══════════════ INSTALL PROMPT ═══════════════
+let dp=null;
+window.addEventListener("beforeinstallprompt",e=>{
+  e.preventDefault();dp=e;
+  show($("inst-bar"));
+});
+$("inst-btn").addEventListener("click",async()=>{
+  if(!dp)return;
+  dp.prompt();
+  await dp.userChoice;
+  dp=null;hide($("inst-bar"));
+});
+$("inst-x").addEventListener("click",()=>hide($("inst-bar")));
+window.addEventListener("appinstalled",()=>{hide($("inst-bar"));dp=null;});
+setTimeout(()=>{
+  if(!dp&&!window.matchMedia("(display-mode:standalone)").matches){
+    const b=$("inst-bar");
+    if(b.classList.contains("hide")){
+      b.querySelector("p").textContent='📲 Menu ⋮ → "Ajouter à l\'écran d\'accueil"';
+      show(b);
+    }
+  }
+},3000);
+
+window.addEventListener("offline",()=>toast("📡 Mode hors-ligne"));
+window.addEventListener("online",()=>toast("✓ Connexion rétablie"));
+</script>
+</body>
+</html>
